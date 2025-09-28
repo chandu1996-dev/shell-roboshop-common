@@ -11,6 +11,9 @@ SCRIPT_NAME=$( echo $0 | cut -d "." -f1 )
 LOG_FILE="$LOGS_FOLDER/$SCRIPT_NAME.log" # /var/log/shell-roboshop/mongodb.log
 start_TIME=$(date +%s)
 
+MONGODB_HOST=mongo.born96.fun
+
+
 mkdir -p $LOGS_FOLDER
 echo "Script started executed at: $(date)" | tee -a $LOG_FILE
 
@@ -38,3 +41,51 @@ print_total_time(){
     echo -e "script excuted in : $Y $TOTAL_TIME seconds : $N"
 
 }
+
+nodejs_setup(){
+    dnf module disable nodejs -y &>>$LOG_FILE
+    VALIDATE $? "disabling the nodejs"
+
+    dnf  module enable nodejs:20 -y &>>$LOG_FILE
+    VALIDATE $? "enable the nodesjs"
+
+
+    dnf install nodejs -y &>>$LOG_FILE
+    VALIDATE $? "install the modesjs"
+
+    npm install &>>$LOG_FILE
+    VALIDATE $? "Install dependencies"
+
+}
+
+ systemd_setup(){
+
+        cp $SCRIPT_DIR/$app_name.service /etc/systemd/system/$app_name.service 
+        VALIDATE $? "copying systemctl services"
+        systemctl daemon-reload 
+    }
+    
+
+app_setup(){
+    mkdir -p /app  &>>$LOG_FILE    
+    VALIDATE $? "creating a directory name as app"
+
+
+    curl -o /tmp/$app_name.zip https://roboshop-artifacts.s3.amazonaws.com/$app_name-v3.zip &>>$LOG_FILE
+    VALIDATE $? "downlod the $app_name application"
+
+    cd /app 
+    VALIDATE $? "change directory"
+
+    rm -rf /app/*
+    VALIDATE $? "Removing existing code"
+
+    unzip /tmp/$app_name.zip &>>$LOG_FILE
+    VALIDATE $? "unzip the code"
+}
+
+restart_app(){
+
+    systemctl restart $app_name
+    VALIDATE $? "Restarting appname"
+    }
