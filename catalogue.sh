@@ -23,6 +23,6 @@ else
     echo -e "$app_name products already loaded ... $Y SKIPPING $N"
 fi
 
-restart_app
+app_restart
 
 print_total_time
