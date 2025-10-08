@@ -12,7 +12,7 @@ LOG_FILE="$LOGS_FOLDER/$SCRIPT_NAME.log" # /var/log/shell-roboshop/mongodb.log
 start_TIME=$(date +%s)
 SCRIPT_DIR=$PWD # for absoulute path
 
-MONGODB_HOST=mongo.born96.fun
+MONGODB_HOST=mongodb.born96.fun
 MYSQL_HOST=mysql.born96.fun
 
 
